@@ -4,6 +4,8 @@ import Logo from './components/logo/Logo';
 import Search from './components/search/Search';
 import Rank from './components/rank/Rank';
 import Face from './components/face/Face';
+import Signin from './components/Signin/Signin';
+import Register from './components/register/Register';
 import ParticlesBg from 'particles-bg';
 import './App.css';
 
@@ -14,10 +16,12 @@ class App extends Component {
       input: '',
       imageUrl: '',
       box: {},
+      route: 'Signin'
     }
   }
 
   calculateFaceLocation = (data) =>{
+    // console.log(data);
     const clarifaiFace = data.outputs[0].data.regions[0].region_info.bounding_box;
     const image = document.getElementById('inputImage');
     const width = Number(image.width);
@@ -39,6 +43,11 @@ class App extends Component {
   onInputChange = (event) => {
     this.setState({ input: event.target.value })
 
+  }
+
+
+  onRouteChange = (route) =>{
+    this.setState({route:route})
   }
 
   onSubmit = () => {
@@ -89,11 +98,20 @@ class App extends Component {
     return (
       <div className='container'>
         <ParticlesBg color="#ffffff" num={100} type="cobweb" bg={true} />
-        <Navigation />
-        <Logo />
-        <Rank />
-        <Search onInputChange={this.onInputChange} onSubmit={this.onSubmit} />
-        <Face box={this.state.box} imageUrl={this.state.imageUrl} />
+        <Navigation onRouteChange={this.onRouteChange}/>
+        { this.state.route ==='home'
+          ?<div>
+          <Logo />
+          <Rank />
+          <Search onInputChange={this.onInputChange} onSubmit={this.onSubmit} />
+          <Face box={this.state.box} imageUrl={this.state.imageUrl} />
+          </div>
+        :(
+          this.state.route === 'Signin'?
+            <Signin onRouteChange={this.onRouteChange}/>
+          : <Register onRouteChange={this.onRouteChange} />
+         )
+        }
       </div>
     );
   }
